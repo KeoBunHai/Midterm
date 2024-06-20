@@ -1,0 +1,106 @@
+package Midterm_semester2;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Arrays;
+
+public class LockApp extends JFrame {
+    private JButton clearButton, enterButton;
+
+    private JPasswordField pwdField;
+    private JLabel Label;
+    private JButton[] btn;
+    private char[] savedPassword = null;
+
+    public LockApp() {
+        createUI();
+    }
+
+    private void createUI() {
+        setTitle("Lock Class");
+        setSize(400, 200);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(4, 3, 5, 5));
+
+        pwdField = new JPasswordField();
+        pwdField.setEchoChar('*');
+
+        clearButton = new JButton("Clear");
+        clearButton.addActionListener(new ClearButtonListener());
+
+        enterButton = new JButton("Enter");
+        enterButton.addActionListener(new EnterButtonListener());
+
+        btn = new JButton[10];
+        for (int i = 1; i <= 9; i++) {
+            btn[i] = new JButton(String.valueOf(i));
+            btn[i].addActionListener(new NumberButtonListener());
+        }
+
+        panel.add(btn[1]);
+        panel.add(btn[2]);
+        panel.add(btn[3]);
+        panel.add(btn[4]);
+        panel.add(btn[5]);
+        panel.add(btn[6]);
+        panel.add(btn[7]);
+        panel.add(btn[8]);
+        panel.add(btn[9]);
+
+        panel.add(clearButton);
+        panel.add(pwdField);
+        panel.add(enterButton);
+
+        Label = new JLabel("Enter passcode");
+        add(panel, BorderLayout.CENTER);
+        add(Label, BorderLayout.SOUTH);
+
+        setVisible(true);
+    }
+
+    private class ClearButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            pwdField.setText("");
+            Label.setText("Enter passcode");
+        }
+    }
+
+    private class EnterButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            char[] enteredPassword = pwdField.getPassword();
+
+            if (savedPassword == null) {
+                savedPassword = Arrays.copyOf(enteredPassword, enteredPassword.length);
+                Arrays.fill(enteredPassword, ' ');  
+                Label.setText("Password Set");
+            } else {
+                if (Arrays.equals(savedPassword, enteredPassword)) {
+                    Label.setText("Correct Password");
+                } else {
+                    Label.setText("Incorrect Password");
+                }
+            }
+            Arrays.fill(enteredPassword, ' '); 
+            pwdField.setText("");
+        }
+    }
+
+    private class NumberButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JButton s = (JButton) e.getSource();
+            pwdField.setText(pwdField.getText() + s.getText());
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(LockApp::new);
+    }
+}
+//sucess
